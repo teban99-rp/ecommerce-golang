@@ -4,13 +4,14 @@ import (
 	"errors"
 
 	"github.com/teban99-rp/ecommerce-golang/database"
+	"github.com/teban99-rp/ecommerce-golang/dto"
 	"github.com/teban99-rp/ecommerce-golang/models"
 	"github.com/teban99-rp/ecommerce-golang/utils"
 )
 
 type UserService interface {
 	CreateUser(user *models.User) error
-	GetUsers() ([]models.User, error)
+	GetUsers() ([]dto.UserResponseDTO, error)
 	Login(email, password string) (string, error)
 	FindByEmail(email string) (*models.User, error)
 }
@@ -33,10 +34,23 @@ func (s *userService) CreateUser(user *models.User) error {
 	return database.DB.Create(user).Error
 }
 
-func (s *userService) GetUsers() ([]models.User, error) {
+func (s *userService) GetUsers() ([]dto.UserResponseDTO, error) {
 	var users []models.User
 	err := database.DB.Find(&users).Error
-	return users, err
+	if err != nil {
+		return nil, err
+	}
+
+	var response []dto.UserResponseDTO
+	for _, user := range users {
+		response = append(response, dto.UserResponseDTO{
+			ID:       user.ID,
+			Name:     user.Name,
+			LastName: user.LastName,
+			Email:    user.Email,
+		})
+	}
+	return response, nil
 }
 
 func (s *userService) Login(email, password string) (string, error) {
