@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/teban99-rp/ecommerce-golang/dto"
 	"github.com/teban99-rp/ecommerce-golang/models"
 	"github.com/teban99-rp/ecommerce-golang/services"
 )
@@ -35,4 +36,23 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 func (c *UserController) GetUsers(ctx *gin.Context) {
 	users, _ := c.service.GetUsers()
 	ctx.JSON(http.StatusOK, users)
+}
+
+// Login maneja la autenticación de usuarios y genera un token JWT
+func (c *UserController) Login(ctx *gin.Context) {
+
+	var input dto.LoginDTO
+
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	token, err := c.service.Login(input.Email, input.Password)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"token": token})
 }
