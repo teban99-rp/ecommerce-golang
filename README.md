@@ -37,3 +37,6 @@ Para instalar todos los paquetes necesarios que ocupa el proyecto
 go run main.go
 ```
 Si todo esta correcto, se podrá ver un mensaje indicando que el servidor esta corriendo. (__Server started on :8080__)
+
+### 4. Video Explicativo
+[Enlace del video](https://mailinternacionaledu-my.sharepoint.com/:f:/g/personal/esriospe_uide_edu_ec/IgAerqxojjFRQpjX5I4fj_z0ATRCSGZcQKLwA0k9Adq2F00?e=r9yJdc)
