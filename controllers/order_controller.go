@@ -46,3 +46,43 @@ func (c *OrderController) GetOrders(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, orders)
 }
+
+func (c *OrderController) ProcessPayment(ctx *gin.Context) {
+
+	var input dto.PaymentDTO
+
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := c.service.ProcessPayment(input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Pago aprobado"})
+}
+
+func (c *OrderController) ShipOrder(ctx *gin.Context) {
+
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	if err := c.service.ShipOrder(uint(id)); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Orden enviada"})
+}
+
+func (c *OrderController) CancelOrder(ctx *gin.Context) {
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	if err := c.service.CancelOrder(uint(id)); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Orden cancelada"})
+}

@@ -1,0 +1,17 @@
+{{ define "login" }}
+<h2>Iniciar Sesión</h2>
+
+<form method="POST" action="/login">
+    <div class="mb-3">
+        <label>Email</label>
+        <input name="email" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label>Contraseña</label>
+        <input type="password" name="password" class="form-control">
+    </div>
+
+    <button class="btn btn-primary">Ingresar</button>
+</form>
+{{ end }}

@@ -1,0 +1,37 @@
+{{ define "layout" }}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    {{ template "navbar" . }}
+
+    <div class="container mt-4">
+        {{ if eq .view "home" }}
+            {{ template "home" . }}
+        {{ else if eq .view "products" }}
+            {{ template "products" . }}
+        {{ else if eq .view "login" }}
+            {{ template "login" . }}
+        {{ else if eq .view "register" }}
+            {{ template "register" . }}
+        {{ else if eq .view "cart" }}
+            {{ template "cart" . }}
+        {{ else if eq .view "orders" }}
+            {{ template "orders" . }}
+        {{ else if eq .view "admin_dashboard" }}
+            {{ template "admin_dashboard" . }}
+        {{ else if eq .view "admin_products" }}
+            {{ template "admin_products" . }}
+        {{ else if eq .view "admin_orders" }}
+            {{ template "admin_orders" . }}
+        {{ end }}
+    </div>
+
+</body>
+</html>
+{{ end }}

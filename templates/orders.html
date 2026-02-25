@@ -1,0 +1,22 @@
+{{ define "orders" }}
+<h2>Mis Órdenes</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Total</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ range .orders }}
+        <tr>
+            <td>{{ .ID }}</td>
+            <td>$ {{ .Total }}</td>
+            <td>{{ .Status }}</td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
+{{ end }}

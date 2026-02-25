@@ -64,7 +64,7 @@ func (s *userService) Login(email, password string) (string, error) {
 		return "", errors.New("credenciales incorrectas")
 	}
 
-	token, err := utils.GenerateJWT(user.ID)
+	token, err := utils.GenerateJWT(user.ID, user.Role)
 	if err != nil {
 		return "", err
 	}

@@ -1,0 +1,33 @@
+{{ define "admin_orders" }}
+<h2>Administrar Órdenes</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ range .orders }}
+        <tr>
+            <td>{{ .ID }}</td>
+            <td>$ {{ .Total }}</td>
+            <td>{{ .Status }}</td>
+            <td>
+                <form method="POST" action="/admin/orders/payment">
+                    <input type="hidden" name="order_id" value="{{ .ID }}">
+                    <button class="btn btn-primary btn-sm">Procesar Pago</button>
+                </form>
+
+                <form method="POST" action="/admin/orders/{{ .ID }}/ship" class="mt-1">
+                    <button class="btn btn-warning btn-sm">Enviar</button>
+                </form>
+            </td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
+{{ end }}

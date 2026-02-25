@@ -1,0 +1,26 @@
+{{ define "cart" }}
+<h2>Carrito</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ range .items }}
+        <tr>
+            <td>{{ .Product.Name }}</td>
+            <td>{{ .Quantity }}</td>
+            <td>$ {{ .Product.Price }}</td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
+
+<form method="POST" action="/orders">
+    <button class="btn btn-success">Crear Orden</button>
+</form>
+{{ end }}

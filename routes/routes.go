@@ -16,18 +16,26 @@ func SetupRoutes(
 	api := router.Group("/api")
 	{
 		api.POST("/login", userController.Login)
-		api.POST("/users", userController.CreateUser)
+		api.POST("/register", userController.CreateUser)
 		api.GET("/products", productControllerDTO.GetProducts)
 	}
 
 	protected := api.Group("/")
 	protected.Use(middleware.JWTAuthMiddleware())
 	{
-		protected.GET("/users", userController.GetUsers)
-		protected.POST("/products", productControllerDTO.CreateProduct)
 		protected.POST("/add_cart", cartController.AddToCart)
 		protected.GET("/cart/:user_id", cartController.GetCart)
 		protected.POST("/create_order", orderController.CreateOrder)
 		protected.GET("/orders/:user_id", orderController.GetOrders)
+		protected.POST("/orders/payment", orderController.ProcessPayment)
+	}
+
+	admin := api.Group("/admin")
+	admin.Use(middleware.JWTAuthMiddleware(), middleware.AuthorizeRole("admin"))
+	{
+		admin.GET("/users", userController.GetUsers)
+		admin.POST("/products", productControllerDTO.CreateProduct)
+		admin.POST("/orders/ship/:id", orderController.ShipOrder)
+		admin.POST("/orders/cancel/:id", orderController.CancelOrder)
 	}
 }

@@ -3,6 +3,8 @@ package services
 import (
 	"errors"
 	"math"
+	"math/rand"
+	"time"
 
 	"github.com/teban99-rp/ecommerce-golang/database"
 	"github.com/teban99-rp/ecommerce-golang/dto"
@@ -13,6 +15,9 @@ import (
 type OrderService interface {
 	CreateOrder(data dto.CreateOrderDTO) error
 	GetOrders(userID uint) ([]dto.OrderResponseDTO, error)
+	ProcessPayment(data dto.PaymentDTO) error
+	ShipOrder(orderID uint) error
+	CancelOrder(orderID uint) error
 }
 
 type orderService struct{}
@@ -133,4 +138,90 @@ func (s *orderService) GetOrders(userID uint) ([]dto.OrderResponseDTO, error) {
 	response = append(response, orderResponse)
 
 	return response, nil
+}
+
+func (s *orderService) ProcessPayment(data dto.PaymentDTO) error {
+	// Metodo para procesar o no la orden
+
+	return database.DB.Transaction(func(tx *gorm.DB) error {
+		var order models.Order
+
+		if err := tx.First(&order, data.OrderID).Error; err != nil {
+			return errors.New("orden no encontrada")
+		}
+
+		if order.Status != "pending" {
+			return errors.New("la orden ya ha sido procesada")
+		}
+
+		// Simulación de procesamiento de pago
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+		success := r.Intn(100) < 80 // Simula un pago exitoso o fallido (80% de éxito)
+
+		if !success {
+			return errors.New("procesamiento de pago fallido")
+		}
+
+		order.Status = "paid"
+		if err := tx.Save(&order).Error; err != nil {
+			return err
+		}
+
+		return tx.Save(&order).Error
+	})
+}
+
+func (s *orderService) ShipOrder(orderID uint) error {
+
+	var order models.Order
+
+	if err := database.DB.First(&order, orderID).Error; err != nil {
+		return errors.New("orden no encontrada")
+	}
+
+	if order.Status != "paid" {
+		return errors.New("la orden debe estar pagada para enviarse")
+	}
+
+	order.Status = "shipped"
+
+	return database.DB.Save(&order).Error
+}
+
+func (s *orderService) CancelOrder(orderID uint) error {
+
+	return database.DB.Transaction(func(tx *gorm.DB) error {
+
+		var order models.Order
+
+		if err := tx.Preload("Items").
+			First(&order, orderID).Error; err != nil {
+			return errors.New("orden no encontrada")
+		}
+
+		if order.Status != "pending" {
+			return errors.New("solo se pueden cancelar órdenes pendientes")
+		}
+
+		// Devolver stock
+		for _, item := range order.Items {
+
+			var inventory models.Inventory
+
+			if err := tx.Where("product_id = ?", item.ProductID).
+				First(&inventory).Error; err != nil {
+				return err
+			}
+
+			inventory.Stock += item.Quantity
+
+			if err := tx.Save(&inventory).Error; err != nil {
+				return err
+			}
+		}
+
+		order.Status = "cancelled"
+
+		return tx.Save(&order).Error
+	})
 }

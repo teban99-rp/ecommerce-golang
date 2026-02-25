@@ -34,6 +34,10 @@ func main() {
 	// database.SeedInventory()
 
 	router := gin.Default()
+	router.LoadHTMLGlob("templates/*")
+
+	routes.RegisterViewRoutes(router)
+
 	routes.SetupRoutes(
 		router,
 		controllerUser,

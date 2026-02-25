@@ -1,0 +1,21 @@
+{{ define "admin_products" }}
+<h2>Administrar Productos</h2>
+
+<form method="POST" action="/admin/products" class="mb-4">
+    <input name="name" placeholder="Nombre" class="form-control mb-2">
+    <input name="description" placeholder="Descripción" class="form-control mb-2">
+    <input name="price" placeholder="Precio" class="form-control mb-2">
+    <input name="stock" placeholder="Stock" class="form-control mb-2">
+    <button class="btn btn-success">Crear Producto</button>
+</form>
+
+<table class="table">
+    {{ range .products }}
+    <tr>
+        <td>{{ .Name }}</td>
+        <td>{{ .Price }}</td>
+        <td>{{ .Stock }}</td>
+    </tr>
+    {{ end }}
+</table>
+{{ end }}

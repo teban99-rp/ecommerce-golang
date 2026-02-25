@@ -1,0 +1,20 @@
+{{ define "home" }}
+<div class="container mt-4">
+    <h1 class="mb-4">Bienvenido a la tienda</h1>
+
+    <div class="row">
+        {{ range .products }}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>{{ .Name }}</h5>
+                    <p>{{ .Description }}</p>
+                    <p><strong>$ {{ .Price }}</strong></p>
+                    <a href="/products" class="btn btn-primary">Ver Productos</a>
+                </div>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

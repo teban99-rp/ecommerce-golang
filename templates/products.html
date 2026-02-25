@@ -1,0 +1,23 @@
+{{ define "products" }}
+<h2>Productos</h2>
+
+<div class="row">
+{{ range .products }}
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>{{ .Name }}</h5>
+                <p>{{ .Description }}</p>
+                <p><strong>$ {{ .Price }}</strong></p>
+
+                <form method="POST" action="/cart">
+                    <input type="hidden" name="product_id" value="{{ .ID }}">
+                    <input type="number" name="quantity" value="1" min="1" class="form-control mb-2">
+                    <button class="btn btn-primary">Agregar al carrito</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{{ end }}
+</div>
+{{ end }}
