@@ -36,7 +36,13 @@ func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 
-	routes.RegisterViewRoutes(router)
+	routes.RegisterViewRoutes(
+		router,
+		controllerUser,
+		controllerProductDTO,
+		controllerCart,
+		controllerOrder,
+	)
 
 	routes.SetupRoutes(
 		router,

@@ -1,21 +1,124 @@
 {{ define "admin_products" }}
-<h2>Administrar Productos</h2>
-
-<form method="POST" action="/admin/products" class="mb-4">
-    <input name="name" placeholder="Nombre" class="form-control mb-2">
-    <input name="description" placeholder="Descripción" class="form-control mb-2">
-    <input name="price" placeholder="Precio" class="form-control mb-2">
-    <input name="stock" placeholder="Stock" class="form-control mb-2">
-    <button class="btn btn-success">Crear Producto</button>
-</form>
-
-<table class="table">
-    {{ range .products }}
-    <tr>
-        <td>{{ .Name }}</td>
-        <td>{{ .Price }}</td>
-        <td>{{ .Stock }}</td>
-    </tr>
+<div class="container mt-5">
+    {{ if .success }}
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ .success }}
+            <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+        </div>
     {{ end }}
-</table>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-box-seam me-2"></i>Gestión de Inventario</h2>
+        <button class="btn btn-primary shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm">
+            <i class="bi bi-plus-lg me-1"></i> Nuevo Producto
+        </button>
+    </div>
+
+    <div class="collapse mb-5" id="collapseForm">
+        <div class="card card-body border-0 shadow-sm bg-light p-4">
+            <h5 class="mb-3 fw-bold">Registrar Nuevo Producto</h5>
+            <form method="POST" action="/view/admin/products">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Nombre</label>
+                        <input name="name" placeholder="Nombre" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Precio ($)</label>
+                        <input name="price" type="number" step="0.01" placeholder="0.00" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Descripción</label>
+                        <input name="description" placeholder="Breve detalle..." class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Stock Inicial</label>
+                        <input name="stock" type="number" placeholder="Cantidad" class="form-control" required>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button class="btn btn-success fw-bold px-4">
+                            <i class="bi bi-check-lg me-1"></i> Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Producto</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th class="text-center" style="min-width: 140px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .products }}
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">{{ .Name }}</div>
+                                <small class="text-muted text-truncate d-block" style="max-width: 200px;">
+                                    {{ .Description }}
+                                </small>
+                            </td>
+                            <td class="font-monospace fw-bold text-primary">${{ .Price }}</td>
+                            <td>
+                                {{ if lt .Stock 10 }}
+                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
+                                        {{ .Stock }} (Bajo)
+                                    </span>
+                                {{ else }}
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                        {{ .Stock }}
+                                    </span>
+                                {{ end }}
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="/view/admin/product/{{ .ID }}" class="btn btn-sm btn-primary px-3" title="Editar">
+                                        Editar
+                                    </a>
+                                    
+                                    <form action="/view/admin/delete/product/{{ .ID }}" method="POST" 
+                                          onsubmit="return confirm('¿Estás seguro de eliminar este producto?');"
+                                          class="m-0"> 
+                                          <button type="submit" class="btn btn-sm btn-danger px-3" title="Eliminar">
+                                             Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {{ else }}
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">No hay productos.</td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Esperamos a que el contenido cargue
+    document.addEventListener("DOMContentLoaded", function() {
+        // Seleccionamos la alerta
+        const alert = document.querySelector('.alert');
+        console.log("Alerta encontrada:", alert);
+        if (alert) {
+            // Configuramos un temporizador (3000ms = 3 segundos)
+            setTimeout(function() {
+                // Usamos la API nativa de Bootstrap para cerrar la alerta con estilo
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 2000);
+        }
+    });
+</script>
 {{ end }}

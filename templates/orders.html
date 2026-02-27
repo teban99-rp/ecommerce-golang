@@ -1,22 +1,102 @@
 {{ define "orders" }}
-<h2>Mis Órdenes</h2>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0 fw-bold text-dark">Mis Órdenes</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">ID de Orden</th>
+                                    <th>Total</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Método de pago</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{ range .orders }}
+                                <tr>
+                                    <td class="ps-4 fw-bold">#{{ .ID }}</td>
+                                    <td class="font-monospace">${{ .TotalPrice }}</td>
+                                    <td class="text-muted small">{{ .Date }}</td> 
+                                    <td>
+                                        {{ if eq .Status "pending" }}
+                                            <span class="badge rounded-pill bg-warning text-dark">Pendiente</span>
+                                        {{ else if eq .Status "shipped" }}
+                                            <span class="badge rounded-pill bg-success text-white">Enviada</span>
+                                        {{ else if eq .Status "cancelled" }}
+                                            <span class="badge rounded-pill bg-danger">Cancelada</span>
+                                        {{ else if eq .Status "paid" }}
+                                            <span class="badge rounded-pill bg-info">Pagada</span>
+                                        {{ end }}
+                                    </td>
+                                    <td>
+                                        {{ if eq .PayMethod "card" }}
+                                            <span class="badge rounded-pill bg-success">Tarjeta</span>
+                                        {{ else if eq .PayMethod "transfer" }}
+                                            <span class="badge rounded-pill bg-success">Transferencia</span>
+                                        {{ else if eq .PayMethod "paypal"}}
+                                            <span class="badge rounded-pill bg-success">Paypal</span>
+                                        {{ end }}
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary">Detalles</button>
+                                    </td>
+                                </tr>
+                                {{ else }}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">No tienes órdenes registradas.</td>
+                                </tr>
+                                {{ end }}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Total</th>
-            <th>Estado</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{ range .orders }}
-        <tr>
-            <td>{{ .ID }}</td>
-            <td>$ {{ .Total }}</td>
-            <td>{{ .Status }}</td>
-        </tr>
-        {{ end }}
-    </tbody>
-</table>
+        <div class="col-lg-4">
+            <div class="card shadow-lg border-0 text-black mb-4" style="background-color: #9ec5fe">
+                <div class="card-body p-4 text-center">
+                    <i class="bi bi-credit-card-2-back fs-1 mb-3"></i>
+                    <h5 class="fw-bold">Procesar Pago</h5>
+                    <p class="small opacity-75">Completa tu pago de forma segura para recibir tus productos.</p>
+                    
+                    <hr class="bg-white">
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Total a pagar:</span>
+                        <span class="h4 fw-bold mb-0">${{ .lastOrderTotal }}</span>
+                    </div>
+
+                    <form method="POST" action="/view/orders/payment">
+                        <input type="hidden" name="order_id" value="{{ .lastOrderID }}">
+                        
+                        <div class="mb-3 text-start">
+                            <label class="form-label small">Método de Pago</label>
+                            <select class="form-select form-select-sm shadow-none" name="method">
+                                <option value="card">Tarjeta de Crédito / Débito</option>
+                                <option value="transfer">Transferencia Bancaria</option>
+                                <option value="paypal">PayPal</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-light btn-lg w-100 fw-bold shadow-sm py-3 mt-2" {{ if not .lastOrderID }}disabled{{ end }}>
+                            Pagar Ahora
+                        </button>
+                    </form>
+                </div>
+                <div class="card-footer bg-dark bg-opacity-25 border-0 text-center py-3">
+                    <small><i class="bi bi-shield-check me-1"></i> Transacción protegida</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {{ end }}

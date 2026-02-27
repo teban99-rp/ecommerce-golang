@@ -2,6 +2,12 @@
 <h2>Productos</h2>
 
 <div class="row">
+    {{ if .success }}
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ .success }}
+            <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+        </div>
+    {{ end }}
 {{ range .products }}
     <div class="col-md-4">
         <div class="card mb-4">
@@ -10,14 +16,33 @@
                 <p>{{ .Description }}</p>
                 <p><strong>$ {{ .Price }}</strong></p>
 
-                <form method="POST" action="/cart">
-                    <input type="hidden" name="product_id" value="{{ .ID }}">
-                    <input type="number" name="quantity" value="1" min="1" class="form-control mb-2">
-                    <button class="btn btn-primary">Agregar al carrito</button>
-                </form>
+                {{ if $.logged_in }}
+                    <form method="POST" action="/view/add_cart">
+                        <input type="hidden" name="product_id" value="{{ .ID }}">
+                        <input type="hidden" name="user_id" value="{{ $.user_id }}">
+                        <input type="number" name="quantity" value="1" min="1" class="form-control mb-2">
+                        <button class="btn btn-primary">Agregar al carrito</button>
+                    </form>
+                {{ end}}
             </div>
         </div>
     </div>
 {{ end }}
 </div>
+<script>
+    // Esperamos a que el contenido cargue
+    document.addEventListener("DOMContentLoaded", function() {
+        // Seleccionamos la alerta
+        const alert = document.querySelector('.alert');
+        console.log("Alerta encontrada:", alert);
+        if (alert) {
+            // Configuramos un temporizador (3000ms = 3 segundos)
+            setTimeout(function() {
+                // Usamos la API nativa de Bootstrap para cerrar la alerta con estilo
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 2000);
+        }
+    });
+</script>
 {{ end }}

@@ -35,6 +35,9 @@ func SetupRoutes(
 	{
 		admin.GET("/users", userController.GetUsers)
 		admin.POST("/products", productControllerDTO.CreateProduct)
+		admin.GET("/product/:product_id", productControllerDTO.EditProduct)
+		admin.POST("/product/:product_id", productControllerDTO.UpdateProduct)
+		admin.POST("/delete/product/:product_id", productControllerDTO.DeleteProduct)
 		admin.POST("/orders/ship/:id", orderController.ShipOrder)
 		admin.POST("/orders/cancel/:id", orderController.CancelOrder)
 	}

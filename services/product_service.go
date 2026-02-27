@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/teban99-rp/ecommerce-golang/database"
 	"github.com/teban99-rp/ecommerce-golang/dto"
 	"github.com/teban99-rp/ecommerce-golang/models"
@@ -8,8 +10,11 @@ import (
 )
 
 type ProductServiceDTO interface {
-	CreateProduct(product *dto.ProductDTO) error
 	GetProducts() ([]dto.ProductResponseDTO, error)
+	CreateProduct(product *dto.ProductDTO) error
+	EditProduct(productID uint) (product *dto.ProductResponseDTO)
+	UpdateProduct(productID uint, data *dto.ProductDTO) error
+	DeleteProduct(productID uint) error
 }
 
 type productServiceDTO struct{}
@@ -62,4 +67,49 @@ func (s *productServiceDTO) GetProducts() ([]dto.ProductResponseDTO, error) {
 		})
 	}
 	return response, nil
+}
+
+func (s *productServiceDTO) EditProduct(productID uint) (data *dto.ProductResponseDTO) {
+
+	var product models.Product
+
+	if err := database.DB.Preload("Inventory").First(&product, productID).Error; err != nil {
+		return nil
+	}
+
+	item := dto.ProductResponseDTO{
+		ID:          product.ID,
+		Name:        product.Name,
+		Description: product.Description,
+		Price:       product.Price,
+		Stock:       product.Inventory.Stock,
+	}
+
+	return &item
+}
+
+func (s *productServiceDTO) UpdateProduct(productID uint, data *dto.ProductDTO) error {
+
+	var product models.Product
+
+	if err := database.DB.First(&product, productID).Error; err != nil {
+		return errors.New("producto no encontrada")
+	}
+
+	product.Name = data.Name
+	product.Description = data.Description
+	product.Price = data.Price
+	product.Inventory.Stock = data.Stock
+
+	return database.DB.Save(&product).Error
+}
+
+func (s *productServiceDTO) DeleteProduct(productID uint) error {
+	var product models.Product
+
+	if err := database.DB.First(&product, productID).Error; err != nil {
+		return errors.New("producto no encontrado")
+	}
+
+	return database.DB.Delete(&product).Error
 }

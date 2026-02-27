@@ -1,19 +1,33 @@
 {{ define "home" }}
-<div class="container mt-4">
-    <h1 class="mb-4">Bienvenido a la tienda</h1>
+<header class="bg-light py-5 mb-5 border-bottom">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center">
+            <h1 class="display-4 fw-bolder">Bienvenido a la tienda</h1>
+            <p class="lead fw-normal text-muted mb-0">Encuentra los mejores productos al mejor precio.</p>
+            <a href="/view/products" class="btn btn-primary btn-lg mt-4">Comprar ahora</a>
+        </div>
+    </div>
+</header>
 
-    <div class="row">
+<div class="container" id="productos">
+    <h2 class="mb-4 text-center">Productos Destacados</h2>
+    <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-3 justify-content-center">
+
         {{ range .products }}
-        <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5>{{ .Name }}</h5>
-                    <p>{{ .Description }}</p>
-                    <p><strong>$ {{ .Price }}</strong></p>
-                    <a href="/products" class="btn btn-primary">Ver Productos</a>
+        
+        <div class="col mb-5">
+            <div class="card h-100 shadow-sm">
+                <!-- <img class="card-img-top" src="https://via.placeholder.com/450x300" alt="Producto" /> -->
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bolder">{{ .Name }}</h5>
+                    <p class="text-muted">${{ .Price }}</p>
+                </div>
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent text-center">
+                    <a class="btn btn-outline-dark mt-auto" href="/view/product/">Ver detalle</a>
                 </div>
             </div>
         </div>
+
         {{ end }}
     </div>
 </div>

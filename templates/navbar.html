@@ -1,12 +1,27 @@
 {{ define "navbar" }}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">E-Commerce</a>
-        <div>
-            <a class="btn btn-outline-light me-2" href="/products">Productos</a>
-            <a class="btn btn-outline-light me-2" href="/cart">Carrito</a>
-            <a class="btn btn-outline-light me-2" href="/orders">Mis Órdenes</a>
-            <a class="btn btn-warning" href="/admin">Admin</a>
+    <div class="container">
+        <a class="navbar-brand" href="/view/">Mi Tienda Online</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {{ if .logged_in }}
+                    {{ if eq .role "admin" }}
+                        <li class="nav-item"><a class="nav-link" href="/view/admin/dashboard">Admin</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/view/admin/products">Productos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/view/admin/orders">Órdenes</a></li>
+                    {{ else }}
+                        <li class="nav-item"><a class="nav-link" href="/view/cart/{{ .user_id }}">Carrito 🛒</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/view/orders/{{ .user_id }}">Mis Órdenes</a></li>
+                    {{ end }}
+                {{ else }}
+                    <li class="nav-item"><a class="nav-link" href="/view/products">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/view/login">Iniciar Sesión</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/view/register">Registrarse</a></li>
+                {{ end }}
+            </ul>
         </div>
     </div>
 </nav>

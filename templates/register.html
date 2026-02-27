@@ -1,27 +1,54 @@
 {{ define "register" }}
-<h2>Registro</h2>
+<div class="container my-5">
+    <div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Crear Cuenta</h2>
+                        <p class="text-muted">Únete a nuestra comunidad hoy mismo</p>
+                    </div>
 
-<form method="POST" action="/api/register">
-    <div class="mb-3">
-        <label>Nombre</label>
-        <input name="name" class="form-control">
+                    <form method="POST" action="/api/register">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" name="name" class="form-control" id="regName" placeholder="Nombre" required>
+                                    <label for="regName">Nombre</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" name="lastname" class="form-control" id="regLastname" placeholder="Apellido" required>
+                                    <label for="regLastname">Apellido</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="email" name="email" class="form-control" id="regEmail" placeholder="nombre@ejemplo.com" required>
+                            <label for="regEmail">Correo electrónico</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input type="password" name="password" class="form-control" id="regPassword" placeholder="Contraseña" required>
+                            <label for="regPassword">Contraseña</label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg shadow-sm" type="submit">
+                                Registrarse
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <span class="text-muted small">¿Ya tienes una cuenta?</span>
+                            <a href="/login" class="text-decoration-none small fw-bold"> Inicia sesión aquí</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label>Apellido</label>
-        <input name="lastname" class="form-control">
-    </div>
-
-    <div class="mb-3">
-        <label>Email</label>
-        <input name="email" class="form-control">
-    </div>
-
-    <div class="mb-3">
-        <label>Contraseña</label>
-        <input type="password" name="password" class="form-control">
-    </div>
-
-    <button class="btn btn-success">Registrarse</button>
-</form>
+</div>
 {{ end }}

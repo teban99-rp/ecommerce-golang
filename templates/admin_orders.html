@@ -1,33 +1,67 @@
 {{ define "admin_orders" }}
-<h2>Administrar Órdenes</h2>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark"><i class="bi bi-receipt-cutoff me-2"></i>Gestión de Órdenes</h2>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Total</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{ range .orders }}
-        <tr>
-            <td>{{ .ID }}</td>
-            <td>$ {{ .Total }}</td>
-            <td>{{ .Status }}</td>
-            <td>
-                <form method="POST" action="/admin/orders/payment">
-                    <input type="hidden" name="order_id" value="{{ .ID }}">
-                    <button class="btn btn-primary btn-sm">Procesar Pago</button>
-                </form>
-
-                <form method="POST" action="/admin/orders/{{ .ID }}/ship" class="mt-1">
-                    <button class="btn btn-warning btn-sm">Enviar</button>
-                </form>
-            </td>
-        </tr>
-        {{ end }}
-    </tbody>
-</table>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">ID de Orden</th>
+                            <th>Total</th>
+                            <th>Estado Actual</th>
+                            <th class="text-center" style="min-width: 280px;">Acciones de Gestión</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .orders }}
+                        <tr>
+                            <td class="ps-4 fw-bold">#{{ .ID }}</td>
+                            <td class="font-monospace">${{ .TotalPrice }}</td>
+                            <td>
+                                {{ if eq .Status "pending" }}
+                                    <span class="badge rounded-pill bg-warning text-dark">Pendiente</span>
+                                {{ else if eq .Status "shipped" }}
+                                    <span class="badge rounded-pill bg-success text-white">Enviada</span>
+                                {{ else if eq .Status "cancelled" }}
+                                    <span class="badge rounded-pill bg-danger">Cancelada</span>
+                                {{ else if eq .Status "paid" }}
+                                    <span class="badge rounded-pill bg-info">Pagada</span>
+                                {{ end }}
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    {{ if eq .Status "paid" }}
+                                        <form method="POST" action="/admin/orders/{{ .ID }}/ship" class="m-0">
+                                            <button class="btn btn-sm btn-outline-success px-3 fw-bold">
+                                                <i class="bi bi-truck me-1"></i> Enviar
+                                            </button>
+                                        </form>
+                                    {{ else if eq .Status "pending"}}
+                                        <form method="POST" action="/admin/orders/{{ .ID }}/cancel" class="m-0" 
+                                            onsubmit="return confirm('¿Estás seguro de que deseas cancelar esta orden?');">
+                                            <button class="btn btn-sm btn-outline-danger px-3 fw-bold">
+                                                <i class="bi bi-x-circle me-1"></i> Cancelar
+                                            </button>
+                                        </form>
+                                    {{ else }}
+                                        <span class="text-muted small italic">Sin acciones pendientes</span>
+                                    {{ end }}
+                                </div>
+                            </td>
+                        </tr>
+                        {{ else }}
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">No hay órdenes para gestionar.</td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {{ end }}

@@ -1,17 +1,57 @@
 {{ define "login" }}
-<h2>Iniciar Sesión</h2>
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="col-md-5">
+            {{ if .error }}
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ .error }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {{ end }}
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4 fw-bold">Iniciar Sesión</h2>
+                    
+                    <form method="POST" action="/view/login">
+                        <div class="form-floating mb-3">
+                            <input type="email" name="email" class="form-control" id="floatingInput" placeholder="nombre@ejemplo.com" required>
+                            <label for="floatingInput">Correo electrónico</label>
+                        </div>
 
-<form method="POST" action="/login">
-    <div class="mb-3">
-        <label>Email</label>
-        <input name="email" class="form-control">
+                        <div class="form-floating mb-3">
+                            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Contraseña" required>
+                            <label for="floatingPassword">Contraseña</label>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-primary btn-lg shadow-sm" type="submit">
+                                Ingresar
+                            </button>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="/view/register" class="text-decoration-none small">¿No tienes cuenta? Regístrate</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label>Contraseña</label>
-        <input type="password" name="password" class="form-control">
-    </div>
-
-    <button class="btn btn-primary">Ingresar</button>
-</form>
+</div>
+<script>
+    // Esperamos a que el contenido cargue
+    document.addEventListener("DOMContentLoaded", function() {
+        // Seleccionamos la alerta
+        const alert = document.querySelector('.alert');
+        console.log("Alerta encontrada:", alert);
+        if (alert) {
+            // Configuramos un temporizador (3000ms = 3 segundos)
+            setTimeout(function() {
+                // Usamos la API nativa de Bootstrap para cerrar la alerta con estilo
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 3000);
+        }
+    });
+</script>
 {{ end }}

@@ -15,6 +15,7 @@ import (
 type OrderService interface {
 	CreateOrder(data dto.CreateOrderDTO) error
 	GetOrders(userID uint) ([]dto.OrderResponseDTO, error)
+	GetAllOrders() ([]dto.OrderResponseDTO, error)
 	ProcessPayment(data dto.PaymentDTO) error
 	ShipOrder(orderID uint) error
 	CancelOrder(orderID uint) error
@@ -105,12 +106,12 @@ func (s *orderService) CreateOrder(data dto.CreateOrderDTO) error {
 
 func (s *orderService) GetOrders(userID uint) ([]dto.OrderResponseDTO, error) {
 
-	var order models.Order
+	var orders []models.Order
 
 	err := database.DB.
 		Preload("Items.Product").
 		Where("user_id = ?", userID).
-		Find(&order).Error
+		Find(&orders).Error
 
 	if err != nil {
 		return nil, err
@@ -118,24 +119,68 @@ func (s *orderService) GetOrders(userID uint) ([]dto.OrderResponseDTO, error) {
 
 	var response []dto.OrderResponseDTO
 
-	var orderResponse dto.OrderResponseDTO
-	orderResponse.ID = order.ID
-	orderResponse.UserID = order.UserID
-	orderResponse.TotalPrice = order.Total
-
-	for _, item := range order.Items {
-		orderItem := dto.OrderItemDTO{
-			ItemOrderID: item.ID,
-			ProductID:   item.ProductID,
-			Name:        item.Product.Name,
-			Quantity:    item.Quantity,
-			Price:       item.Price,
-			TotalPrice:  math.Round((item.Price * float64(item.Quantity) * 100)) / 100, // Redondear a 2 decimales
+	for _, order := range orders {
+		orderResponse := dto.OrderResponseDTO{
+			ID:         order.ID,
+			UserID:     order.UserID,
+			TotalPrice: order.Total,
+			Status:     order.Status,
+			PayMethod:  order.PayMethod,
+			Date:       order.CreatedAt.Format("2006-01-02"),
 		}
-		orderResponse.Items = append(orderResponse.Items, orderItem)
+		for _, item := range order.Items {
+			orderItem := dto.OrderItemDTO{
+				ItemOrderID: item.ID,
+				ProductID:   item.ProductID,
+				Name:        item.Product.Name,
+				Quantity:    item.Quantity,
+				Price:       item.Price,
+				TotalPrice:  math.Round((item.Price * float64(item.Quantity) * 100)) / 100, // Redondear a 2 decimales
+			}
+			orderResponse.Items = append(orderResponse.Items, orderItem)
+		}
+		response = append(response, orderResponse)
 	}
 
-	response = append(response, orderResponse)
+	return response, nil
+}
+
+func (s *orderService) GetAllOrders() ([]dto.OrderResponseDTO, error) {
+
+	var orders []models.Order
+
+	err := database.DB.
+		Preload("Items.Product").
+		Find(&orders).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	var response []dto.OrderResponseDTO
+
+	for _, order := range orders {
+		orderResponse := dto.OrderResponseDTO{
+			ID:         order.ID,
+			UserID:     order.UserID,
+			TotalPrice: order.Total,
+			Status:     order.Status,
+			PayMethod:  order.PayMethod,
+			Date:       order.CreatedAt.Format("2006-01-02"),
+		}
+		for _, item := range order.Items {
+			orderItem := dto.OrderItemDTO{
+				ItemOrderID: item.ID,
+				ProductID:   item.ProductID,
+				Name:        item.Product.Name,
+				Quantity:    item.Quantity,
+				Price:       item.Price,
+				TotalPrice:  math.Round((item.Price * float64(item.Quantity) * 100)) / 100, // Redondear a 2 decimales
+			}
+			orderResponse.Items = append(orderResponse.Items, orderItem)
+		}
+		response = append(response, orderResponse)
+	}
 
 	return response, nil
 }
@@ -163,6 +208,7 @@ func (s *orderService) ProcessPayment(data dto.PaymentDTO) error {
 		}
 
 		order.Status = "paid"
+		order.PayMethod = data.Method
 		if err := tx.Save(&order).Error; err != nil {
 			return err
 		}

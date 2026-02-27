@@ -2,33 +2,43 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/teban99-rp/ecommerce-golang/database"
+	"github.com/teban99-rp/ecommerce-golang/dto"
 	"github.com/teban99-rp/ecommerce-golang/models"
 )
 
 func ShowHome(c *gin.Context) {
 
 	var products []models.Product
-	database.DB.Find(&products)
+	err := database.DB.Preload("Inventory").Limit(3).Find(&products).Error
+
+	var response []dto.ProductResponseDTO
+
+	if err != nil {
+		c.HTML(http.StatusOK, "layout", gin.H{
+			"title":    "Inicio",
+			"view":     "home",
+			"products": response,
+		})
+	}
+
+	for _, p := range products {
+		response = append(response, dto.ProductResponseDTO{
+			ID:          p.ID,
+			Name:        p.Name,
+			Description: p.Description,
+			Price:       p.Price,
+			Stock:       p.Inventory.Stock,
+		})
+	}
 
 	c.HTML(http.StatusOK, "layout", gin.H{
 		"title":    "Inicio",
 		"view":     "home",
-		"products": products,
-	})
-}
-
-func ShowProducts(c *gin.Context) {
-
-	var products []models.Product
-	database.DB.Find(&products)
-
-	c.HTML(http.StatusOK, "layout", gin.H{
-		"title":    "Productos",
-		"products": products,
-		"view":     "products",
+		"products": response,
 	})
 }
 
@@ -46,32 +56,22 @@ func ShowRegister(c *gin.Context) {
 	})
 }
 
-func ShowCart(c *gin.Context) {
-	c.HTML(http.StatusOK, "layout", gin.H{
-		"title": "Carrito",
-		"view":  "cart",
-	})
-}
-
-func ShowOrders(c *gin.Context) {
-
-	var orders []models.Order
-	database.DB.Find(&orders)
-
-	c.HTML(http.StatusOK, "layout", gin.H{
-		"title":  "Ordenes",
-		"orders": orders,
-		"view":   "orders",
-	})
-}
-
 func ShowAdminDashboard(c *gin.Context) {
 
-	var users []models.User
-	database.DB.Find(&users)
+	userIDStr, err := c.Cookie("user_id")
+	var userID uint
+	if err == nil {
+		id, _ := strconv.Atoi(userIDStr)
+		userID = uint(id)
+	}
+
+	role, err := c.Cookie("role")
+
 	c.HTML(http.StatusOK, "layout", gin.H{
-		"title": "Admin Dashboard",
-		"users": users,
-		"view":  "admin_dashboard",
+		"title":     "Admin Dashboard",
+		"view":      "admin_dashboard",
+		"user_id":   userID,
+		"role":      role,
+		"logged_in": userID > 0,
 	})
 }

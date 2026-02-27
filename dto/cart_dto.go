@@ -7,9 +7,11 @@ type AddToCartDTO struct {
 }
 
 type CartItemDTO struct {
-	CartID     uint   `json:"cart_id"`
-	ItemCartID uint   `json:"item_cart_id"`
-	ProductID  uint   `json:"product_id"`
-	Name       string `json:"name"`
-	Quantity   int    `json:"quantity"`
+	CartID     uint    `json:"cart_id"`
+	ItemCartID uint    `json:"item_cart_id"`
+	ProductID  uint    `json:"product_id"`
+	Name       string  `json:"name"`
+	Quantity   int     `json:"quantity"`
+	Price      float64 `json:"price"`
+	Total      float64 `json:"total"`
 }
