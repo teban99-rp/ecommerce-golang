@@ -18,13 +18,16 @@ func SetupRoutes(
 		api.POST("/login", userController.Login)
 		api.POST("/register", userController.CreateUser)
 		api.GET("/products", productControllerDTO.GetProducts)
+		// api.GET("/logout", userController.Logout)
 	}
 
 	protected := api.Group("/")
 	protected.Use(middleware.JWTAuthMiddleware())
 	{
+		//carrito
 		protected.POST("/add_cart", cartController.AddToCart)
 		protected.GET("/cart/:user_id", cartController.GetCart)
+		//ordenes
 		protected.POST("/create_order", orderController.CreateOrder)
 		protected.GET("/orders/:user_id", orderController.GetOrders)
 		protected.POST("/orders/payment", orderController.ProcessPayment)
@@ -33,11 +36,19 @@ func SetupRoutes(
 	admin := api.Group("/admin")
 	admin.Use(middleware.JWTAuthMiddleware(), middleware.AuthorizeRole("admin"))
 	{
+		//usuarios
 		admin.GET("/users", userController.GetUsers)
+		admin.POST("/users/change_rol/:user_id", userController.ChangeRol)
+		//productos
 		admin.POST("/products", productControllerDTO.CreateProduct)
 		admin.GET("/product/:product_id", productControllerDTO.EditProduct)
-		admin.POST("/product/:product_id", productControllerDTO.UpdateProduct)
-		admin.POST("/delete/product/:product_id", productControllerDTO.DeleteProduct)
+		admin.PUT("/product/:product_id", productControllerDTO.UpdateProduct)
+		admin.DELETE("/delete/product/:product_id", productControllerDTO.DeleteProduct)
+		admin.PUT("/orders/ship/:id", orderController.ShipOrder)
+		admin.PUT("/orders/cancel/:id", orderController.CancelOrder)
+
+		//ordenes
+		admin.GET("/orders", orderController.GetOrderAdmin)
 		admin.POST("/orders/ship/:id", orderController.ShipOrder)
 		admin.POST("/orders/cancel/:id", orderController.CancelOrder)
 	}

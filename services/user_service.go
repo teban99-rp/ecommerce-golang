@@ -14,6 +14,7 @@ type UserService interface {
 	GetUsers() ([]dto.UserResponseDTO, error)
 	Login(email, password string) (string, error)
 	FindByEmail(email string) (*models.User, error)
+	ChangeRol(user uint) error
 }
 
 type userService struct{}
@@ -48,6 +49,7 @@ func (s *userService) GetUsers() ([]dto.UserResponseDTO, error) {
 			Name:     user.Name,
 			LastName: user.LastName,
 			Email:    user.Email,
+			Role:     user.Role,
 		})
 	}
 	return response, nil
@@ -76,4 +78,19 @@ func (s *userService) FindByEmail(email string) (*models.User, error) {
 	var user models.User
 	err := database.DB.Where("email = ?", email).First(&user).Error
 	return &user, err
+}
+
+func (s *userService) ChangeRol(userID uint) error {
+	var user models.User
+	if err := database.DB.First(&user, userID).Error; err != nil {
+		return errors.New("usuario no encontrado")
+	}
+
+	if user.Role == "admin" && user.Email != "admin@admin.com" {
+		user.Role = "customer"
+	} else {
+		user.Role = "admin"
+	}
+
+	return database.DB.Save(&user).Error
 }

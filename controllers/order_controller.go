@@ -88,6 +88,17 @@ func (c *OrderController) CancelOrder(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Orden cancelada"})
 }
 
+func (c *OrderController) GetOrderAdmin(ctx *gin.Context) {
+
+	orders, err := c.service.GetAllOrders()
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "No se encontraron órdenes"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, orders)
+}
+
 // Vistas
 func (c *OrderController) CreateOrderView(ctx *gin.Context) {
 
@@ -181,7 +192,7 @@ func (c *OrderController) ShipOrderView(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Orden enviada"})
+	ctx.Redirect(http.StatusFound, "/view/admin/orders")
 }
 
 func (c *OrderController) CancelOrderView(ctx *gin.Context) {
@@ -192,7 +203,7 @@ func (c *OrderController) CancelOrderView(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Orden cancelada"})
+	ctx.Redirect(http.StatusFound, "/view/admin/orders")
 }
 
 func (c *OrderController) GetOrderAdminView(ctx *gin.Context) {

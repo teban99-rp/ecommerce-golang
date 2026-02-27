@@ -40,6 +40,19 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, users)
 }
 
+func (c *UserController) ChangeRol(ctx *gin.Context) {
+
+	userID, _ := strconv.Atoi(ctx.Param("user_id"))
+
+	if err := c.service.ChangeRol(uint(userID)); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Rol actualizado correctamente"})
+
+}
+
 // Login maneja la autenticación de usuarios y genera un token JWT
 func (c *UserController) Login(ctx *gin.Context) {
 
@@ -85,11 +98,35 @@ func (c *UserController) CreateUserView(ctx *gin.Context) {
 func (c *UserController) GetUsersView(ctx *gin.Context) {
 	users, _ := c.service.GetUsers()
 
+	userIDStr, err := ctx.Cookie("user_id")
+	var userID uint
+	if err == nil {
+		id, _ := strconv.Atoi(userIDStr)
+		userID = uint(id)
+	}
+
+	role, err := ctx.Cookie("role")
+
 	ctx.HTML(http.StatusOK, "layout", gin.H{
-		"title": "Inicio",
-		"view":  "home",
-		"users": users,
+		"title":     "Inicio",
+		"view":      "admin_users",
+		"users":     users,
+		"user_id":   userID,
+		"logged_in": userID > 0,
+		"role":      role,
 	})
+}
+
+func (c *UserController) ChangeRolView(ctx *gin.Context) {
+	userID, _ := strconv.Atoi(ctx.Param("user_id"))
+
+	if err := c.service.ChangeRol(uint(userID)); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.Redirect(http.StatusSeeOther, "/view/admin/users")
+
 }
 
 func (c *UserController) LoginView(ctx *gin.Context) {

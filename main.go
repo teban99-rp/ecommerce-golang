@@ -32,6 +32,7 @@ func main() {
 
 	// database.SeedProducts()
 	// database.SeedInventory()
+	// database.SeedUser()
 
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")

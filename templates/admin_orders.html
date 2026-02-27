@@ -35,15 +35,15 @@
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
                                     {{ if eq .Status "paid" }}
-                                        <form method="POST" action="/admin/orders/{{ .ID }}/ship" class="m-0">
-                                            <button class="btn btn-sm btn-outline-success px-3 fw-bold">
+                                        <form method="POST" action="/view/admin/orders/ship/{{ .ID }}" class="m-0">
+                                            <button class="btn btn-sm btn-success px-3 fw-bold">
                                                 <i class="bi bi-truck me-1"></i> Enviar
                                             </button>
                                         </form>
                                     {{ else if eq .Status "pending"}}
-                                        <form method="POST" action="/admin/orders/{{ .ID }}/cancel" class="m-0" 
+                                        <form method="POST" action="/view/admin/orders/cancel/{{ .ID }}" class="m-0" 
                                             onsubmit="return confirm('¿Estás seguro de que deseas cancelar esta orden?');">
-                                            <button class="btn btn-sm btn-outline-danger px-3 fw-bold">
+                                            <button class="btn btn-sm btn-danger px-3 fw-bold">
                                                 <i class="bi bi-x-circle me-1"></i> Cancelar
                                             </button>
                                         </form>

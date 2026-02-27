@@ -26,8 +26,10 @@ func RegisterViewRoutes(
 	protected := view.Group("/")
 	protected.Use(middleware.JWTAuthMiddlewareView())
 	{
+		//carrito
 		protected.GET("/cart/:user_id", controllerCart.GetCartView)
 		protected.POST("/add_cart", controllerCart.AddToCartView)
+		//ordenes
 		protected.POST("/create_order", controllerOrder.CreateOrderView)
 		protected.GET("/orders/:user_id", controllerOrder.GetOrderView)
 		protected.POST("/orders/payment", controllerOrder.ProcessPaymentView)
@@ -37,14 +39,18 @@ func RegisterViewRoutes(
 	admin.Use(middleware.JWTAuthMiddlewareView(), middleware.AuthorizeRole("admin"))
 	{
 		admin.GET("/dashboard", controllers.ShowAdminDashboard)
+		//usuarios
+		admin.GET("/users", controllerUser.GetUsersView)
+		admin.POST("/users/change_rol/:user_id", controllerUser.ChangeRolView)
+		//productos
 		admin.GET("/products", controllerProductDTO.GetProductsAdminView)
-		// admin.GET("/users", controllerUser.GetUsers)
 		admin.POST("/products", controllerProductDTO.CreateProductView)
 		admin.GET("/product/:product_id", controllerProductDTO.EditProductView)
 		admin.POST("/product/:product_id", controllerProductDTO.UpdateProductView)
 		admin.POST("/delete/product/:product_id", controllerProductDTO.DeleteProductView)
+		//ordenes
 		admin.GET("/orders", controllerOrder.GetOrderAdminView)
-		admin.POST("/orders/ship/:id", controllerOrder.ShipOrder)
-		admin.POST("/orders/cancel/:id", controllerOrder.CancelOrder)
+		admin.POST("/orders/ship/:id", controllerOrder.ShipOrderView)
+		admin.POST("/orders/cancel/:id", controllerOrder.CancelOrderView)
 	}
 }

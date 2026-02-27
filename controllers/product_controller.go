@@ -46,26 +46,23 @@ func (c *ProductControllerDTO) GetProducts(ctx *gin.Context) {
 
 func (c *ProductControllerDTO) EditProduct(ctx *gin.Context) {
 
-	var input dto.ProductDTO
 	productID, _ := strconv.Atoi(ctx.Param("product_id"))
 
-	if err := ctx.ShouldBindJSON(&input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := c.service_dto.EditProduct(uint(productID)); err == nil {
+	product := c.service_dto.EditProduct(uint(productID))
+	if product == nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Producto no encontrado"})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "Producto actualizado exitosamente"})
+	ctx.JSON(http.StatusOK, product)
 }
 
 func (c *ProductControllerDTO) UpdateProduct(ctx *gin.Context) {
 
 	var input dto.ProductDTO
 	productID, _ := strconv.Atoi(ctx.Param("product_id"))
+
+	log.Printf("ID %v", productID)
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -205,11 +202,9 @@ func (c *ProductControllerDTO) EditProductView(ctx *gin.Context) {
 	product := c.service_dto.EditProduct(uint(productID))
 	if product == nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "No se encontro ningun producto"})
-		// ctx.Redirect(http.StatusFound, "/view/admin/products")
 		return
 	}
 
-	log.Printf("Producto %v", product)
 	userIDStr, err := ctx.Cookie("user_id")
 	var userID uint
 	if err == nil {
@@ -217,9 +212,6 @@ func (c *ProductControllerDTO) EditProductView(ctx *gin.Context) {
 		userID = uint(id)
 	}
 
-	log.Printf("Usuario %v", userID)
-
-	// var IDProduct = product.ID
 	role, err := ctx.Cookie("role")
 
 	ctx.HTML(http.StatusOK, "layout", gin.H{
@@ -245,7 +237,7 @@ func (c *ProductControllerDTO) UpdateProductView(ctx *gin.Context) {
 	price_i, err := strconv.ParseFloat(price, 64)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "precio inválido"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -254,7 +246,7 @@ func (c *ProductControllerDTO) UpdateProductView(ctx *gin.Context) {
 	stock_i, err := strconv.Atoi(stock)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "stock inválido"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 

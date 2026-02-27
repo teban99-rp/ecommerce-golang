@@ -93,7 +93,7 @@ func (s *productServiceDTO) UpdateProduct(productID uint, data *dto.ProductDTO) 
 	var product models.Product
 
 	if err := database.DB.First(&product, productID).Error; err != nil {
-		return errors.New("producto no encontrada")
+		return errors.New("producto no encontrado")
 	}
 
 	product.Name = data.Name

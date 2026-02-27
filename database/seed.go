@@ -20,3 +20,14 @@ func SeedInventory() {
 	}
 	DB.Create(&inventory)
 }
+
+func SeedUser() {
+	user := models.User{
+		Name:     "Usuario",
+		LastName: "Administrador",
+		Email:    "admin@admin.com",
+		Password: "$2a$10$ik06Og9mZnbVBe/npCY8PO8/e5kldqGZUYxMfIMUONzQVrNKHTEDK",
+		Role:     "admin",
+	}
+	DB.Create(&user)
+}

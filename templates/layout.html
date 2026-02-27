@@ -31,6 +31,8 @@
             {{ template "admin_products" . }}
         {{ else if eq .view "admin_orders" }}
             {{ template "admin_orders" . }}
+        {{ else if eq .view "admin_users" }}
+            {{ template "admin_users" . }}
         {{ else if eq .view "admin_product_edit" }}
             {{ template "admin_product_edit" . }}
         {{ end }}
