@@ -129,4 +129,9 @@ Para facilitar la revisión de los servicios web, se ha incluido una colección 
 Solo debes importarla en Postman para probar todos los endpoints (Login, Carrito, Admin, etc.).
 
 ### Video Explicativo
-[Enlace del video](https://mailinternacionaledu-my.sharepoint.com/:f:/g/personal/esriospe_uide_edu_ec/IgAerqxojjFRQpjX5I4fj_z0ATRCSGZcQKLwA0k9Adq2F00?e=r9yJdc)
+[Enlace del video](https://mailinternacionaledu-my.sharepoint.com/:v:/g/personal/esriospe_uide_edu_ec/IQAWHcRecD_dQZG9za4kRaB0AXZRjZJmmdPmuYGD5-5wOho?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=Qv8pak)
+
+### Archivo Informe
+`files/Entregable_final/Informe_proyecto_final.pdf`
+
+Solo debes importarla en Postman para probar todos los endpoints (Login, Carrito, Admin, etc.).
