@@ -1,5 +1,11 @@
 {{ define "cart" }}
 <div class="container mt-5">
+    {{ if .error }}
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ .error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {{ end }}
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow-sm border-0 mb-4">
@@ -95,4 +101,20 @@
         </div>
     </div>
 </div>
+<script>
+    // Esperamos a que el contenido cargue
+    document.addEventListener("DOMContentLoaded", function() {
+        // Seleccionamos la alerta
+        const alert = document.querySelector('.alert');
+        console.log("Alerta encontrada:", alert);
+        if (alert) {
+            // Configuramos un temporizador (3000ms = 3 segundos)
+            setTimeout(function() {
+                // Usamos la API nativa de Bootstrap para cerrar la alerta con estilo
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 3000);
+        }
+    });
+</script>
 {{ end }}

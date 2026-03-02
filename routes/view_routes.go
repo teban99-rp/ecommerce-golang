@@ -20,6 +20,7 @@ func RegisterViewRoutes(
 		view.POST("/login", controllerUser.LoginView)
 		view.GET("/logout", controllerUser.LogoutView)
 		view.GET("/register", controllers.ShowRegister)
+		view.POST("/register", controllerUser.CreateUserView)
 		view.GET("/products", controllerProductDTO.GetProductsView)
 	}
 

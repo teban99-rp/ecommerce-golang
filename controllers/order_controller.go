@@ -115,7 +115,8 @@ func (c *OrderController) CreateOrderView(ctx *gin.Context) {
 	input.UserID = uint(userID)
 
 	if err := c.service.CreateOrder(input); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.SetCookie("flash_msg", err.Error(), 10, "/", "localhost", false, true)
+		ctx.Redirect(http.StatusFound, "/view/cart/"+user_id)
 		return
 	}
 

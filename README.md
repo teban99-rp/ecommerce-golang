@@ -46,6 +46,14 @@ cd ecommerce-golang
 go mod tidy
 ```
 Para instalar todos los paquetes necesarios que ocupa el proyecto
+- Configurar archivo .env
+```
+DB_USER= root
+DB_PASSWORD= 
+DB_HOST= localhost
+DB_PORT= 3306
+DB_NAME= ecommerce
+```
 - Ejecutar la aplicación
 ```bash
 go run main.go

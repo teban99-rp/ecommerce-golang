@@ -112,6 +112,12 @@ func (c *CartController) GetCartView(ctx *gin.Context) {
 		userIDCookie = uint(id)
 	}
 
+	msg, err := ctx.Cookie("flash_msg")
+
+	if err == nil {
+		ctx.SetCookie("flash_msg", "", -1, "/", "localhost", false, true)
+	}
+
 	ctx.HTML(http.StatusOK, "layout", gin.H{
 		"title":     "Carrito",
 		"view":      "cart",
@@ -119,5 +125,6 @@ func (c *CartController) GetCartView(ctx *gin.Context) {
 		"Total":     total,
 		"user_id":   userIDCookie,
 		"logged_in": userIDCookie > 0,
+		"error":     msg,
 	})
 }

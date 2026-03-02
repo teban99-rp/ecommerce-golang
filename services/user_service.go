@@ -2,6 +2,8 @@ package services
 
 import (
 	"errors"
+	"net/mail"
+	"strings"
 
 	"github.com/teban99-rp/ecommerce-golang/database"
 	"github.com/teban99-rp/ecommerce-golang/dto"
@@ -24,6 +26,10 @@ func NewUserService() UserService {
 }
 
 func (s *userService) CreateUser(user *models.User) error {
+
+	if !IsValidEmail(user.Email) {
+		return errors.New("Correo inválido")
+	}
 
 	hashPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
@@ -93,4 +99,15 @@ func (s *userService) ChangeRol(userID uint) error {
 	}
 
 	return database.DB.Save(&user).Error
+}
+
+func IsValidEmail(email string) bool {
+	email = strings.TrimSpace(email)
+
+	if email == "" {
+		return false
+	}
+
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }

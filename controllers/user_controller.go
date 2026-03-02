@@ -92,6 +92,32 @@ func (c *UserController) CreateUserView(ctx *gin.Context) {
 		return
 	}
 
+	data, err := c.service.FindByEmail(email)
+	if err != nil {
+		ctx.Redirect(http.StatusSeeOther, "/view/products")
+		return
+	}
+
+	ctx.SetCookie(
+		"user_id",
+		strconv.Itoa(int(data.ID)),
+		86400, // 1 día
+		"/view",
+		"localhost",
+		false,
+		true,
+	)
+
+	ctx.SetCookie(
+		"role",
+		data.Role,
+		86400, // 1 día
+		"/view",
+		"localhost",
+		false,
+		true,
+	)
+
 	ctx.Redirect(http.StatusSeeOther, "/view/products")
 }
 
