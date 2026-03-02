@@ -133,5 +133,3 @@ Solo debes importarla en Postman para probar todos los endpoints (Login, Carrito
 
 ### Archivo Informe
 `files/Entregable_final/Informe_proyecto_final.pdf`
-
-Solo debes importarla en Postman para probar todos los endpoints (Login, Carrito, Admin, etc.).
